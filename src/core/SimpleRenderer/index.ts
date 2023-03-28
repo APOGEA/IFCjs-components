@@ -15,10 +15,7 @@ import {
  * [CSS2DObjects](https://threejs.org/docs/#examples/en/renderers/CSS2DRenderer)
  * respectively).
  */
-export class SimpleRenderer
-  extends BaseRenderer
-  implements Disposable, Updateable, Resizeable
-{
+export class SimpleRenderer extends BaseRenderer implements Disposable, Updateable, Resizeable {
   /** {@link Component.name} */
   name = "SimpleRenderer";
 
