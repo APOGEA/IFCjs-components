@@ -46,7 +46,7 @@ interface IComponentConfig {
   selectionHighlighter: string;
 }
 
-class PropertiesContainer extends SimpleUIComponent {
+export class PropertiesContainer extends SimpleUIComponent {
   name: string = "PropertiesContainer";
 
   constructor(components: Components) {
@@ -55,7 +55,7 @@ class PropertiesContainer extends SimpleUIComponent {
   }
 }
 
-class PropertiesTable extends SimpleUIComponent {
+export class PropertiesTable extends SimpleUIComponent {
   name: string = "PropertiesTable";
   constructor(components: Components) {
     const table = document.createElement("table");
