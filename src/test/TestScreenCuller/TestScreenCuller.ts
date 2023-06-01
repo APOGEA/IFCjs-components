@@ -52,20 +52,20 @@ export class TestScreenCuller extends Component<null> implements Disposable {
     this._buffer = new Uint8Array(this.bufferSize);
     this.materialCache = new Map<string, THREE.MeshBasicMaterial>();
 
-    const code = `
-      addEventListener("message", (event) => {
-        const { buffer } = event.data;
-        const colors = new Set();
-        for (let i = 0; i < buffer.length; i += 4) {
-            const r = buffer[i];
-            const g = buffer[i + 1];
-            const b = buffer[i + 2];
-            const code = "" + r + "-" + g + "-" + b;
-            colors.add(code);
-        }
-        postMessage({ colors });
-      });
-    `;
+    // const code = `
+    //   addEventListener("message", (event) => {
+    //     const { buffer } = event.data;
+    //     const colors = new Set();
+    //     for (let i = 0; i < buffer.length; i += 4) {
+    //         const r = buffer[i];
+    //         const g = buffer[i + 1];
+    //         const b = buffer[i + 2];
+    //         const code = "" + r + "-" + g + "-" + b;
+    //         colors.add(code);
+    //     }
+    //     postMessage({ colors });
+    //   });
+    // `;
 
     if (autoUpdate) window.setInterval(this.updateVisibility, updateInterval);
   }
