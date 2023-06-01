@@ -1807,7 +1807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bim-fragment@npm:latest":
+"bim-fragment@npm:0.0.18":
   version: 0.0.18
   resolution: "bim-fragment@npm:0.0.18"
   dependencies:
@@ -6025,7 +6025,7 @@ __metadata:
     "@types/three": 0.152.1
     "@typescript-eslint/eslint-plugin": ^4.27.0
     "@typescript-eslint/parser": ^4.27.0
-    bim-fragment: latest
+    bim-fragment: 0.0.18
     camera-controls: ^1.36.0
     canvas: ^2.11.2
     cpy-cli: ^3.1.1
