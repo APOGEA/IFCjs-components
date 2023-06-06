@@ -9,20 +9,7 @@ import {
 } from "three";
 import { Components } from "../Components";
 import { InputCameraController } from "./InputCameraController";
-// import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
-
-const KEYS = {
-  a: 65,
-  s: 83,
-  w: 87,
-  d: 68,
-  q: 81,
-  e: 69,
-  arrowLeft: 37,
-  arrowUp: 38,
-  arrowRight: 39,
-  arrowDown: 40,
-};
+import { FirstPersonCameraOptions, KEYS } from "./types";
 
 export class FirstPersonCamera
   extends Component<THREE.PerspectiveCamera | THREE.OrthographicCamera>
@@ -30,6 +17,7 @@ export class FirstPersonCamera
 {
   /** {@link Component.name} */
   name = "FirstPersonCamera";
+
   camera: PerspectiveCamera;
   input: InputCameraController;
   rotation: Quaternion;
@@ -40,6 +28,7 @@ export class FirstPersonCamera
   objects: Mesh[];
   cameraHeight: number;
   isCollide: boolean;
+  enabled: boolean;
 
   /** {@link Updateable.beforeUpdate} */
   readonly beforeUpdate: Event<FirstPersonCamera> =
@@ -106,8 +95,6 @@ export class FirstPersonCamera
 
   dispose(): void {}
 
-  enabled: boolean;
-
   get(): PerspectiveCamera | OrthographicCamera {
     return this.camera;
   }
@@ -166,26 +153,7 @@ export class FirstPersonCamera
     forward.multiplyScalar(100);
     forward.add(this.translation);
 
-    this.camera.lookAt(this.isCollide ? this.collideCalc(forward) : forward);
-  }
-
-  collideCalc(forward: THREE.Vector3) {
-    const closest = forward.clone();
-
-    // WIP collide calc
-    // const dir = forward.clone();
-    // let closest = forward;
-    // let result: null = new THREE.Vector3();
-    // result = null;
-    //
-    // let cast = this.components.raycaster.castRay();
-    // // ----
-    //
-    // for (const obj of this.objects) {
-    //   console.log('obj', obj);
-    // }
-
-    return closest;
+    this.camera.lookAt(forward);
   }
 
   updateTranslation(timeElapsedS: number) {
