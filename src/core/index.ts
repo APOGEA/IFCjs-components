@@ -3,6 +3,7 @@ export * from "./SimpleScene";
 export * from "./ToolsComponent";
 export * from "./SimpleRenderer";
 export * from "./SimpleCamera";
+export * from "./FirstPersonCamera";
 export * from "./SimpleRaycaster";
 export * from "./SimpleGrid";
 export * from "./Components";

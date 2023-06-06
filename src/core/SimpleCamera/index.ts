@@ -117,7 +117,7 @@ export class SimpleCamera
     });
   }
 
-  private static getSubsetOfThree() {
+  static getSubsetOfThree() {
     return {
       MOUSE: THREE.MOUSE,
       Vector2: THREE.Vector2,
