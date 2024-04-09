@@ -149,14 +149,12 @@ export abstract class RoadNavigator extends Component<any> {
           await this.onHighlight.trigger({ mesh, point });
 
           if (this.view === "vertical") {
-            // Add markers elevation
 
-            // Create defSegments desde array mesh.geometry.attributes.position.array
             const setDefSegments = (segmentsArray: any) => {
               let defSegments: any = [];
               let slope: any = [];
 
-              // Calcular pendiente desde cada PK
+
               const calculateSlopeSegment = (
                 point1: number[],
                 point2: number[]
@@ -166,12 +164,10 @@ export abstract class RoadNavigator extends Component<any> {
                 return deltaY / deltaX;
               };
 
-              // Itera sobre cada segmento y calcula la pendiente
               for (let i = 0; i < segmentsArray.length; i++) {
                 const segment = segmentsArray[i];
                 let startX: number, startY: number, endX: number, endY: number;
 
-                // Encuentra el primer punto en el segmento
                 for (let j = 0; j < Object.keys(segment).length / 3; j++) {
                   if (
                     segment[j * 3] !== undefined &&
@@ -183,7 +179,6 @@ export abstract class RoadNavigator extends Component<any> {
                   }
                 }
 
-                // Encuentra el último punto en el segmento
                 for (let j = Object.keys(segment).length / 3 - 1; j >= 0; j--) {
                   if (
                     segment[j * 3] !== undefined &&
@@ -214,7 +209,6 @@ export abstract class RoadNavigator extends Component<any> {
                   let endY = segment[i + 4];
                   let endZ = segment[i + 5];
 
-                  // Calcular la longitud del segmento
                   let segmentLength = Math.sqrt(
                     Math.pow(endX - startX, 2) +
                       Math.pow(endY - startY, 2) +
@@ -235,7 +229,6 @@ export abstract class RoadNavigator extends Component<any> {
             const { alignment } = mesh.curve;
             let positionsVertical = [];
 
-            // Crear lista de alignments verticales
             for (const align of alignment.vertical) {
               const pos = align.mesh.geometry.attributes.position.array;
 
