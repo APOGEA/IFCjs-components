@@ -56,18 +56,20 @@ export abstract class RoadNavigator extends Component<any> {
       }
 
       // TODO: Generate All The KPs and Stations
-      this.markerManager.addCivilMarker(
-        `0+${alignment.initialKP.toFixed(2)}`,
-        alignment[this.view][0].mesh,
-        "InitialKP"
-      );
+      // TODO: Fix if
+      if (this.view !== "vertical") {
+        this.markerManager.addCivilMarker(
+          `0+${alignment.initialKP.toFixed(2)}`,
+          alignment[this.view][0].mesh,
+          "InitialKP"
+        );
 
-      this.markerManager.addCivilMarker(
-        "end",
-        alignment[this.view][alignment[this.view].length - 1].mesh,
-        "FinalKP"
-      );
-
+        this.markerManager.addCivilMarker(
+          "end",
+          alignment[this.view][alignment[this.view].length - 1].mesh,
+          "FinalKP"
+        );
+      }
       for (const curve of alignment[this.view]) {
         scene.add(curve.mesh);
         this._curveMeshes.push(curve.mesh);
@@ -146,6 +148,119 @@ export abstract class RoadNavigator extends Component<any> {
           // TODO: Example and Test, should be replaced with the actual implementation
           // this.markerManager.addCivilMarker("Curve", mesh, "Length");
           await this.onHighlight.trigger({ mesh, point });
+          if (this.view === "vertical") {
+            const setDefSegments = (segmentsArray: any) => {
+              let defSegments: any = [];
+              let slope: any = [];
+
+              const calculateSlopeSegment = (
+                point1: number[],
+                point2: number[]
+              ) => {
+                const deltaY = point2[1] - point1[1];
+                const deltaX = point2[0] - point1[0];
+                return deltaY / deltaX;
+              };
+
+              for (let i = 0; i < segmentsArray.length; i++) {
+                const segment = segmentsArray[i];
+                let startX: number, startY: number, endX: number, endY: number;
+
+                for (let j = 0; j < Object.keys(segment).length / 3; j++) {
+                  if (
+                    segment[j * 3] !== undefined &&
+                    segment[j * 3 + 1] !== undefined
+                  ) {
+                    startX = segment[j * 3];
+                    startY = segment[j * 3 + 1];
+                    break;
+                  }
+                }
+
+                for (let j = Object.keys(segment).length / 3 - 1; j >= 0; j--) {
+                  if (
+                    segment[j * 3] !== undefined &&
+                    segment[j * 3 + 1] !== undefined
+                  ) {
+                    endX = segment[j * 3];
+                    endY = segment[j * 3 + 1];
+                    break;
+                  }
+                }
+
+                const defSlope = calculateSlopeSegment(
+                  // @ts-ignore
+                  [startX, startY],
+                  // @ts-ignore
+                  [endX, endY]
+                );
+                const slopeSegment = (defSlope * 100).toFixed(2);
+                slope.push({ slope: slopeSegment });
+              }
+              segmentsArray.forEach((segment: any) => {
+                for (let i = 0; i < segment.length - 3; i += 3) {
+                  let startX = segment[i];
+                  let startY = segment[i + 1];
+                  let startZ = segment[i + 2];
+
+                  let endX = segment[i + 3];
+                  let endY = segment[i + 4];
+                  let endZ = segment[i + 5];
+
+                  let segmentLength = Math.sqrt(
+                    Math.pow(endX - startX, 2) +
+                      Math.pow(endY - startY, 2) +
+                      Math.pow(endZ - startZ, 2)
+                  );
+
+                  defSegments.push({
+                    distance: segmentLength,
+                    start: new THREE.Vector3(startX, startY, startZ),
+                    end: new THREE.Vector3(endX, endY, endZ),
+                  });
+                }
+              });
+
+              return { defSegments, slope };
+            };
+
+            const { alignment } = mesh.curve;
+            let positionsVertical = [];
+
+            for (const align of alignment.vertical) {
+              const pos = align.mesh.geometry.attributes.position.array;
+
+              positionsVertical.push(pos);
+            }
+
+            const { defSegments, slope } = setDefSegments(positionsVertical);
+
+            alignment.vertical.forEach((align, index: number) => {
+              this.markerManager.addCivilMarker(
+                `S: ${slope[index].slope}%`,
+                align.mesh,
+                "Slope"
+              );
+
+              this.markerManager.addCivilMarker(
+                `H: ${defSegments[index].end.y.toFixed(2)}`,
+                align.mesh,
+                "Coordinate"
+              );
+            });
+
+            this.markerManager.addCivilMarker(
+              "KP: 0",
+              alignment.vertical[0].mesh,
+              "InitialKPV"
+            );
+
+            this.markerManager.addCivilMarker(
+              `KP: ${alignment.vertical.length}`,
+              alignment.vertical[alignment.vertical.length - 1].mesh,
+              "FinalKPV"
+            );
+          }
           return;
         }
 
